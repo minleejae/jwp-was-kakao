@@ -42,9 +42,8 @@ public class ResponseWriter {
 
     private void responseBody() {
         byte[] body = httpResponse.getBody();
-//        System.out.println(Arrays.toString(body));
 
-            try {
+        try {
             dos.write(body, 0, body.length);
             dos.flush();
         } catch (IOException e) {
@@ -52,7 +51,7 @@ public class ResponseWriter {
         }
     }
 
-    private String writeHeader() throws IOException {
+    private String writeHeader() {
         Header header = httpResponse.getHeader();
 
         StringBuilder sb = new StringBuilder();
