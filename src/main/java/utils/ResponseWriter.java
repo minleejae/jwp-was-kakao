@@ -43,6 +43,10 @@ public class ResponseWriter {
     private void responseBody() {
         byte[] body = httpResponse.getBody();
 
+        if (body == null || body.length == 0) {
+            return;
+        }
+
         try {
             dos.write(body, 0, body.length);
             dos.flush();
