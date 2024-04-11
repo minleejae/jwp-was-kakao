@@ -10,6 +10,10 @@ public class QueryStringParser {
     private static final int KEY_INDEX = 0;
     private static final int VALUE_INDEX = 1;
 
+    private QueryStringParser() {
+        throw new AssertionError("Utility class cannot be instantiated");
+    }
+
     public static Map<String, String> parseToMap(String queryString) {
         String[] data = queryString.split(PARAMETER_DELIMITER);
         return Arrays.stream(data)
