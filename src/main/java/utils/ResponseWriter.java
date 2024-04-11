@@ -33,8 +33,8 @@ public class ResponseWriter {
         String startLine = writeStartLine();
         String header = writeHeader();
 
-        System.out.println(startLine);
-        System.out.println(header);
+        logger.debug(startLine);
+        logger.debug(header);
 
         dos.writeBytes(startLine);
         dos.writeBytes(header);
