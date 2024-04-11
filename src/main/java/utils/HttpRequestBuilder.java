@@ -32,6 +32,8 @@ public class HttpRequestBuilder {
     }
 
     private Header buildHeader() throws IOException {
+        final int KEY_INDEX = 0;
+        final int VALUE_INDEX = 1;
         String line;
 
         Header header = new Header();
@@ -41,7 +43,7 @@ public class HttpRequestBuilder {
                 break;
             }
             String[] split = line.split(": ");
-            header.put(split[0], split[1]);
+            header.put(split[KEY_INDEX], split[VALUE_INDEX]);
         }
 
         return header;
