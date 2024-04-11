@@ -4,7 +4,10 @@ import http.HttpMethod;
 import http.QueryParams;
 import model.User;
 import org.junit.jupiter.api.Test;
-import utils.*;
+import utils.FileIoUtils;
+import utils.HttpHeaderUtils;
+import utils.QueryStringParser;
+import utils.UrlParser;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -71,7 +74,10 @@ class RequestHandlerTest {
 
         QueryParams queryParams = new QueryParams(data);
 
-        User user = QueryParamMapper.toUser(queryParams);
+        User user = new User(queryParams.get("userId"),
+                queryParams.get("password"),
+                queryParams.get("name"),
+                queryParams.get("email"));
 
         assertThat(user.getUserId()).isEqualTo("cu");
         assertThat(user.getPassword()).isEqualTo("password");

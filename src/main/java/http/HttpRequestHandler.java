@@ -1,9 +1,11 @@
 package http;
 
 import db.DataBase;
-import http.*;
 import model.User;
-import utils.*;
+import utils.ContentTypeParser;
+import utils.FileIoUtils;
+import utils.HttpResponseBuilder;
+import utils.TemplateUrlBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -44,7 +46,10 @@ public class HttpRequestHandler {
             String requestbody = httpRequest.getBody();
             if (endPoint.equals("/user/create")) {
                 QueryParams queryParams = QueryParams.of(requestbody);
-                User user = QueryParamMapper.toUser(queryParams);
+                User user = new User(queryParams.get("userId"),
+                        queryParams.get("password"),
+                        queryParams.get("name"),
+                        queryParams.get("email"));
 
                 DataBase.addUser(user);
 
