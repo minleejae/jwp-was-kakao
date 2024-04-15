@@ -1,22 +1,22 @@
 package http.commands;
 
 import db.DataBase;
-import http.*;
+import http.Header;
+import http.HttpStatus;
+import http.HttpVersion;
+import http.QueryParams;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
-import model.User;
 import http.response.HttpResponseBuilder;
+import model.User;
 
 public class CreateUserCommand implements HttpRequestCommand {
 
-    private final HttpRequest httpRequest;
-
-    public CreateUserCommand(HttpRequest httpRequest) {
-        this.httpRequest = httpRequest;
+    public CreateUserCommand() {
     }
 
     @Override
-    public HttpResponse handle() {
+    public HttpResponse handle(HttpRequest httpRequest) {
         String requestBody = httpRequest.getBody();
         QueryParams queryParams = QueryParams.of(requestBody);
 

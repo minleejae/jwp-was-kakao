@@ -24,7 +24,7 @@ public class HttpRequestHandler {
 
         HttpRequestCommand command = getCommand(httpMethod, endPoint);
         if (command != null) {
-            return command.handle();
+            return command.handle(httpRequest);
         }
 
         return HttpResponseBuilder.builder()
@@ -35,11 +35,11 @@ public class HttpRequestHandler {
 
     private HttpRequestCommand getCommand(HttpMethod httpMethod, String endPoint) {
         if (httpMethod.equals(HttpMethod.GET)) {
-            return new GetRequestCommand(httpRequest);
+            return new GetRequestCommand();
         }
 
         if (httpMethod.equals(HttpMethod.POST) && endPoint.equals("/user/create")) {
-            return new CreateUserCommand(httpRequest);
+            return new CreateUserCommand();
         }
 
         return null;

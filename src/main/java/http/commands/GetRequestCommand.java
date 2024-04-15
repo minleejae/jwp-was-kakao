@@ -1,11 +1,14 @@
 package http.commands;
 
-import http.*;
+import http.ContentType;
+import http.Header;
+import http.HttpStatus;
+import http.HttpVersion;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
+import http.response.HttpResponseBuilder;
 import utils.ContentTypeParser;
 import utils.FileIoUtils;
-import http.response.HttpResponseBuilder;
 import utils.TemplateUrlBuilder;
 
 import java.io.IOException;
@@ -13,14 +16,11 @@ import java.net.URISyntaxException;
 
 public class GetRequestCommand implements HttpRequestCommand {
 
-    private final HttpRequest httpRequest;
-
-    public GetRequestCommand(HttpRequest httpRequest) {
-        this.httpRequest = httpRequest;
+    public GetRequestCommand() {
     }
 
     @Override
-    public HttpResponse handle() throws IOException, URISyntaxException {
+    public HttpResponse handle(HttpRequest httpRequest) throws IOException, URISyntaxException {
         String templateUrl = TemplateUrlBuilder.build(httpRequest.getUrl());
         ContentType contentType = ContentTypeParser.parse(templateUrl);
         byte[] body = FileIoUtils.loadFileFromClasspath(templateUrl);
