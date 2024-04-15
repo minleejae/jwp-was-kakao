@@ -1,9 +1,9 @@
 package utils;
 
 import http.Header;
-import http.HttpResponse;
 import http.HttpStatus;
 import http.HttpVersion;
+import http.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,7 +1,7 @@
 package utils;
 
 import http.HttpMethod;
-import http.RequestStartLine;
+import http.request.RequestStartLine;
 
 public class HttpHeaderUtils {
 

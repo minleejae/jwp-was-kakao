@@ -1,11 +1,13 @@
-package http;
+package http.response;
+
+import http.Header;
 
 public class HttpResponse {
-    private ResponseStartLine startLine;
+    private final ResponseStartLine startLine;
 
-    private Header header;
+    private final Header header;
 
-    private byte[] body;
+    private final byte[] body;
 
     public HttpResponse(ResponseStartLine startLine, Header header, byte[] body) {
         this.startLine = startLine;

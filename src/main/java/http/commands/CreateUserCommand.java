@@ -2,8 +2,10 @@ package http.commands;
 
 import db.DataBase;
 import http.*;
+import http.request.HttpRequest;
+import http.response.HttpResponse;
 import model.User;
-import utils.HttpResponseBuilder;
+import http.response.HttpResponseBuilder;
 
 public class CreateUserCommand implements HttpRequestCommand {
 

@@ -1,18 +1,10 @@
-package utils;
+package http.response;
 
-import http.*;
+import http.Header;
+import http.HttpStatus;
+import http.HttpVersion;
 
 public class HttpResponseBuilder {
-
-    private ResponseStartLine startLine;
-    private Header header;
-    private byte[] body;
-
-    private HttpResponseBuilder(ResponseStartLine startLine, Header header, byte[] body) {
-        this.startLine = startLine;
-        this.header = header;
-        this.body = body;
-    }
 
     public static Builder builder() {
         return new Builder();
