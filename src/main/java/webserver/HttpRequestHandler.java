@@ -3,9 +3,10 @@ package webserver;
 import http.HttpMethod;
 import http.HttpStatus;
 import http.HttpVersion;
-import http.commands.CreateUserCommand;
-import http.commands.GetRequestCommand;
-import http.commands.HttpRequestCommand;
+import webserver.commands.CreateUserCommand;
+import webserver.commands.GetRequestCommand;
+import webserver.commands.HttpRequestCommand;
+import webserver.commands.RedirectToIndexCommand;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
@@ -22,6 +23,7 @@ public class HttpRequestHandler {
     private static final Map<String, HttpRequestCommand> routeTable = new HashMap<>();
 
     static {
+        routeTable.put("GET:/", new RedirectToIndexCommand());
         routeTable.put("GET:/*", new GetRequestCommand());
         routeTable.put("POST:/user/create", new CreateUserCommand());
     }

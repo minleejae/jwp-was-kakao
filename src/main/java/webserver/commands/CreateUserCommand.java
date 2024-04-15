@@ -1,4 +1,4 @@
-package http.commands;
+package webserver.commands;
 
 import db.DataBase;
 import http.Header;
