@@ -1,14 +1,15 @@
 package http.request;
 
+import http.Body;
 import http.Header;
 import http.HttpMethod;
 
 public class HttpRequest {
     private final RequestStartLine requestStartLine;
     private final Header header;
-    private final String body;
+    private final Body body;
 
-    public HttpRequest(RequestStartLine requestStartLine, Header header, String body) {
+    public HttpRequest(RequestStartLine requestStartLine, Header header, Body body) {
         this.requestStartLine = requestStartLine;
         this.header = header;
         this.body = body;
@@ -27,6 +28,6 @@ public class HttpRequest {
     }
 
     public String getBody() {
-        return body;
+        return body.getBody();
     }
 }
