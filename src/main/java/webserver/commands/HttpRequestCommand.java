@@ -1,4 +1,4 @@
-package http.commands;
+package webserver.commands;
 
 import http.request.HttpRequest;
 import http.response.HttpResponse;
