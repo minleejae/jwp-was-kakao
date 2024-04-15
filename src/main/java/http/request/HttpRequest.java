@@ -1,9 +1,12 @@
-package http;
+package http.request;
+
+import http.Header;
+import http.HttpMethod;
 
 public class HttpRequest {
-    private RequestStartLine requestStartLine;
-    private Header header;
-    private String body;
+    private final RequestStartLine requestStartLine;
+    private final Header header;
+    private final String body;
 
     public HttpRequest(RequestStartLine requestStartLine, Header header, String body) {
         this.requestStartLine = requestStartLine;
@@ -21,10 +24,6 @@ public class HttpRequest {
 
     public String getEndPoint() {
         return requestStartLine.getEndPoint();
-    }
-
-    public int getContentLength() {
-        return header.getContentLength();
     }
 
     public String getBody() {

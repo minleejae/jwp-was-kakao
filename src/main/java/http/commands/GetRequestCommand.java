@@ -1,9 +1,11 @@
 package http.commands;
 
 import http.*;
+import http.request.HttpRequest;
+import http.response.HttpResponse;
 import utils.ContentTypeParser;
 import utils.FileIoUtils;
-import utils.HttpResponseBuilder;
+import http.response.HttpResponseBuilder;
 import utils.TemplateUrlBuilder;
 
 import java.io.IOException;

@@ -3,9 +3,9 @@ package webserver;
 import http.HttpRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import http.HttpRequest;
-import utils.HttpRequestBuilder;
-import http.HttpResponse;
+import http.request.HttpRequest;
+import http.request.HttpRequestBuilder;
+import http.response.HttpResponse;
 import utils.ResponseWriter;
 
 import java.io.*;
@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;

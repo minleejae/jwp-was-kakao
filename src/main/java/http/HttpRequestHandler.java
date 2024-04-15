@@ -3,7 +3,9 @@ package http;
 import http.commands.CreateUserCommand;
 import http.commands.GetRequestCommand;
 import http.commands.HttpRequestCommand;
-import utils.HttpResponseBuilder;
+import http.request.HttpRequest;
+import http.response.HttpResponse;
+import http.response.HttpResponseBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
