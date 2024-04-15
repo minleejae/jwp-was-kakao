@@ -17,3 +17,6 @@
 - [X] Query String 파싱
 - [X] POST 방식으로 회원가입
 - [X] Redirect
+- [X] 로그인 기능 구현
+- [ ] 템플릿 엔진 활용하기
+- [ ] Session 구현하기

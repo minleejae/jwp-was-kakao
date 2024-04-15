@@ -3,10 +3,7 @@ package webserver;
 import http.HttpMethod;
 import http.HttpStatus;
 import http.HttpVersion;
-import webserver.commands.CreateUserCommand;
-import webserver.commands.GetRequestCommand;
-import webserver.commands.HttpRequestCommand;
-import webserver.commands.RedirectToIndexCommand;
+import webserver.commands.*;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
@@ -26,6 +23,7 @@ public class HttpRequestHandler {
         routeTable.put("GET:/", new RedirectToIndexCommand());
         routeTable.put("GET:/*", new GetRequestCommand());
         routeTable.put("POST:/user/create", new CreateUserCommand());
+        routeTable.put("POST:/user/login", new LoginUserCommand());
     }
 
     public HttpRequestHandler(HttpRequest httpRequest) {
