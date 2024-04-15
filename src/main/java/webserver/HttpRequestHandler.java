@@ -1,5 +1,8 @@
-package http;
+package webserver;
 
+import http.HttpMethod;
+import http.HttpStatus;
+import http.HttpVersion;
 import http.commands.CreateUserCommand;
 import http.commands.GetRequestCommand;
 import http.commands.HttpRequestCommand;
@@ -9,20 +12,36 @@ import http.response.HttpResponseBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpRequestHandler {
 
     private final HttpRequest httpRequest;
+
+    private static final Map<String, HttpRequestCommand> routeTable = new HashMap<>();
+
+    static {
+        routeTable.put("GET:/*", new GetRequestCommand());
+        routeTable.put("POST:/user/create", new CreateUserCommand());
+    }
 
     public HttpRequestHandler(HttpRequest httpRequest) {
         this.httpRequest = httpRequest;
     }
 
     public HttpResponse handle() throws IOException, URISyntaxException {
-        HttpMethod httpMethod = httpRequest.getHttpMethod();
-        String endPoint = httpRequest.getEndPoint();
+        HttpMethod method = httpRequest.getHttpMethod();
+        String path = httpRequest.getEndPoint();
+        String key = method.toString() + ":/*";
 
-        HttpRequestCommand command = getCommand(httpMethod, endPoint);
+        HttpRequestCommand command = routeTable.get(key);
+
+        String specificKey = method + ":" + path;
+        if (routeTable.containsKey(specificKey)) {
+            command = routeTable.get(specificKey);
+        }
+
         if (command != null) {
             return command.handle(httpRequest);
         }
@@ -31,17 +50,5 @@ public class HttpRequestHandler {
                 .httpVersion(HttpVersion.HTTP_1_1)
                 .httpStatus(HttpStatus.NOT_FOUND)
                 .build();
-    }
-
-    private HttpRequestCommand getCommand(HttpMethod httpMethod, String endPoint) {
-        if (httpMethod.equals(HttpMethod.GET)) {
-            return new GetRequestCommand();
-        }
-
-        if (httpMethod.equals(HttpMethod.POST) && endPoint.equals("/user/create")) {
-            return new CreateUserCommand();
-        }
-
-        return null;
     }
 }
