@@ -21,6 +21,7 @@ public class HttpRequestHandler {
 
     static {
         routeTable.put("GET:/", new RedirectToIndexCommand());
+        routeTable.put("GET:/user/list.html", new GetUsersCommand());
         routeTable.put("GET:/*", new GetRequestCommand());
         routeTable.put("POST:/user/create", new CreateUserCommand());
         routeTable.put("POST:/user/login", new LoginUserCommand());

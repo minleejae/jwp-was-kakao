@@ -85,10 +85,10 @@
                 <tbody>
                 {{#users}}
                 <tr>
-                    <th scope="row">1</th>
-                    <td>{{userId}}</td>
-                    <td>{{name}}</td>
-                    <td>{{email}}</td>
+                    <th scope="row">{{index}}</th>
+                    <td>{{user.userId}}</td>
+                    <td>{{user.name}}</td>
+                    <td>{{user.email}}</td>
                     <td><a href="#" class="btn btn-success" role="button">수정</a></td>
                 </tr>
                 {{/users}}

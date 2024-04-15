@@ -27,6 +27,10 @@ public class HttpRequest {
         return requestStartLine.getEndPoint();
     }
 
+    public Header getHeader() {
+        return this.header;
+    }
+
     public String getBody() {
         return body.getBody();
     }
