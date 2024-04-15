@@ -3,14 +3,17 @@ package http.request;
 import http.Body;
 import http.Header;
 import http.HttpMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.HttpHeaderUtils;
 import utils.IOUtils;
+import utils.ResponseWriter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public class HttpRequestBuilder {
-
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequestBuilder.class);
     private final BufferedReader bufferedReader;
     private RequestStartLine requestStartLine;
     private Header header;
@@ -21,14 +24,17 @@ public class HttpRequestBuilder {
     }
 
     public HttpRequest build() throws IOException {
+        logger.debug("Start HttpRequest");
         requestStartLine = buildStartLine();
         header = buildHeader();
         body = buildBody();
+        logger.debug("Stop HttpRequest");
         return new HttpRequest(requestStartLine, header, body);
     }
 
     private RequestStartLine buildStartLine() throws IOException {
         String line = bufferedReader.readLine();
+        logger.debug(line);
         return HttpHeaderUtils.parse(line);
     }
 
@@ -40,6 +46,7 @@ public class HttpRequestBuilder {
         Header header = new Header();
         while (true) {
             line = bufferedReader.readLine();
+            logger.debug(line);
             if (line == null || line.isEmpty()) {
                 break;
             }
@@ -55,6 +62,8 @@ public class HttpRequestBuilder {
             return null;
         }
 
-        return new Body(IOUtils.readData(bufferedReader, header.getContentLength()));
+        String bodyString = IOUtils.readData(bufferedReader, header.getContentLength());
+        logger.debug(bodyString);
+        return new Body(bodyString);
     }
 }
