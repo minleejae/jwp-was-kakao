@@ -1,5 +1,6 @@
 package http.request;
 
+import http.Body;
 import http.Header;
 import http.HttpMethod;
 import utils.HttpHeaderUtils;
@@ -13,7 +14,7 @@ public class HttpRequestBuilder {
     private final BufferedReader bufferedReader;
     private RequestStartLine requestStartLine;
     private Header header;
-    private String body;
+    private Body body;
 
     public HttpRequestBuilder(BufferedReader bufferedReader) {
         this.bufferedReader = bufferedReader;
@@ -49,11 +50,11 @@ public class HttpRequestBuilder {
         return header;
     }
 
-    private String buildBody() throws IOException {
+    private Body buildBody() throws IOException {
         if (requestStartLine.getHttpMethod().equals(HttpMethod.GET)) {
             return null;
         }
 
-        return IOUtils.readData(bufferedReader, header.getContentLength());
+        return new Body(IOUtils.readData(bufferedReader, header.getContentLength()));
     }
 }
