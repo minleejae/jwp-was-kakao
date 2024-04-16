@@ -8,6 +8,8 @@ import http.QueryParams;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
+import http.session.Session;
+import http.session.SessionManager;
 import model.User;
 
 import java.util.UUID;
@@ -30,7 +32,7 @@ public class LoginUserCommand implements HttpRequestCommand {
             return createRedirectResponse("http://localhost:8080/user/login_failed.html");
         }
 
-        return createRedirectResponseWithCookie("http://localhost:8080/index.html", generateSessionId());
+        return createRedirectResponseWithCookie(user, "http://localhost:8080/index.html", generateSessionId());
     }
 
     private QueryParams extractQueryParams(HttpRequest httpRequest) {
@@ -52,9 +54,14 @@ public class LoginUserCommand implements HttpRequestCommand {
                 .build();
     }
 
-    private HttpResponse createRedirectResponseWithCookie(String location, String sessionId) {
+    private HttpResponse createRedirectResponseWithCookie(User user, String location, String sessionId) {
         Header header = new Header();
         header.put("location", location);
+
+        Session newSession = new Session(sessionId);
+        newSession.setAttribute("userId", user.getUserId());
+        SessionManager.getInstance().add(newSession);
+
         header.put("Set-Cookie", "JSESSIONID=" + sessionId + "; Path=/");
         return HttpResponseBuilder.builder()
                 .httpVersion(HttpVersion.HTTP_1_1)

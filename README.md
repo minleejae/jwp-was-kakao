@@ -19,4 +19,4 @@
 - [X] Redirect
 - [X] 로그인 기능 구현
 - [X] 템플릿 엔진 활용하기
-- [ ] Session 구현하기
+- [X] Session 구현하기

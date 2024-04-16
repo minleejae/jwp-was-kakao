@@ -12,6 +12,8 @@ import http.HttpVersion;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
+import http.session.Session;
+import http.session.SessionManager;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,7 @@ public class GetUsersCommand implements HttpRequestCommand {
 
     private static final Logger log = LoggerFactory.getLogger(GetUsersCommand.class);
 
+    @Override
     public HttpResponse handle(HttpRequest httpRequest) {
         // 사용자가 로그인한 상태인지 확인
         if (!isUserLoggedIn(httpRequest)) {
@@ -70,7 +73,26 @@ public class GetUsersCommand implements HttpRequestCommand {
 
     private boolean isUserLoggedIn(HttpRequest httpRequest) {
         String cookies = httpRequest.getHeader().get("Cookie");
-        return cookies != null && cookies.contains("JSESSIONID");
+
+        if (cookies == null || !cookies.contains("JSESSIONID")) {
+            return false;
+        }
+
+        String[] cookiesArray = cookies.split(";\\s*");
+        String sessionId = null;
+        for (String cookie : cookiesArray) {
+            if (cookie.startsWith("JSESSIONID=")) {
+                sessionId = cookie.substring("JSESSIONID=".length());
+                break;
+            }
+        }
+
+        if (sessionId == null) {
+            return false;
+        }
+
+        Session session = SessionManager.getInstance().findSession(sessionId);
+        return session != null && session.getAttribute("userId") != null;
     }
 
     private HttpResponse createRedirectResponse(String location) {
