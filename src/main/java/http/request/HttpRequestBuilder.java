@@ -9,6 +9,8 @@ import utils.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpRequestBuilder {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequestBuilder.class);
@@ -41,7 +43,7 @@ public class HttpRequestBuilder {
         final int VALUE_INDEX = 1;
         String line;
 
-        Header header = new Header();
+        Map<String, String> headers = new HashMap<>();
         while (true) {
             line = bufferedReader.readLine();
             logger.debug(line);
@@ -49,10 +51,10 @@ public class HttpRequestBuilder {
                 break;
             }
             String[] split = line.split(": ");
-            header.put(split[KEY_INDEX], split[VALUE_INDEX]);
+            headers.put(split[KEY_INDEX], split[VALUE_INDEX]);
         }
 
-        return header;
+        return new Header(headers);
     }
 
     private Body buildBody() throws IOException {

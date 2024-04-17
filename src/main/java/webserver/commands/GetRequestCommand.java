@@ -8,6 +8,7 @@ import http.request.HttpRequest;
 import http.request.Url;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
+import http.response.HttpResponseHeaderBuilder;
 import utils.ContentTypeParser;
 import utils.FileIoUtils;
 import utils.TemplateUrlBuilder;
@@ -27,9 +28,10 @@ public class GetRequestCommand implements HttpRequestCommand {
         ContentType contentType = ContentTypeParser.parse(templateUrl);
         byte[] body = FileIoUtils.loadFileFromClasspath(templateUrl);
 
-        Header header = new Header();
-        header.put("Content-Length", String.valueOf(body.length));
-        header.put("Content-Type", contentType.getValue() + ";charset=utf-8");
+        Header header = new HttpResponseHeaderBuilder.Builder()
+                .contentLength(body.length)
+                .contentType(contentType)
+                .build();
 
         return HttpResponseBuilder.builder()
                 .httpVersion(HttpVersion.HTTP_1_1)

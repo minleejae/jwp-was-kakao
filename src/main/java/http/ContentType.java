@@ -28,6 +28,6 @@ public enum ContentType {
     }
 
     public String getValue() {
-        return value;
+        return value + ";charset=utf-8";
     }
 }

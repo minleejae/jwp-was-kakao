@@ -8,6 +8,7 @@ import http.QueryParams;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
+import http.response.HttpResponseHeaderBuilder;
 import model.User;
 
 public class CreateUserCommand implements HttpRequestCommand {
@@ -29,8 +30,9 @@ public class CreateUserCommand implements HttpRequestCommand {
 
         DataBase.addUser(user);
 
-        Header header = new Header();
-        header.put("location", "http://localhost:8080/index.html");
+        Header header = new HttpResponseHeaderBuilder.Builder()
+                .location("http://localhost:8080/index.html")
+                .build();
 
         return HttpResponseBuilder.builder()
                 .httpVersion(HttpVersion.HTTP_1_1)

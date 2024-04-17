@@ -7,6 +7,7 @@ import http.HttpVersion;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
+import http.response.HttpResponseHeaderBuilder;
 import http.session.Session;
 import http.session.SessionManager;
 import utils.ContentTypeParser;
@@ -28,9 +29,10 @@ public class GetUserLoginCommand implements HttpRequestCommand {
         ContentType contentType = ContentTypeParser.parse(templateUrl);
         byte[] body = FileIoUtils.loadFileFromClasspath(templateUrl);
 
-        Header header = new Header();
-        header.put("Content-Length", String.valueOf(body.length));
-        header.put("Content-Type", contentType.getValue() + ";charset=utf-8");
+        Header header = new HttpResponseHeaderBuilder.Builder()
+                .contentLength(body.length)
+                .contentType(contentType)
+                .build();
 
         return HttpResponseBuilder.builder()
                 .httpVersion(HttpVersion.HTTP_1_1)
@@ -65,8 +67,10 @@ public class GetUserLoginCommand implements HttpRequestCommand {
     }
 
     private HttpResponse createRedirectResponse(String location) {
-        Header header = new Header();
-        header.put("Location", location);
+        Header header = new HttpResponseHeaderBuilder.Builder()
+                .location(location)
+                .build();
+
         return HttpResponseBuilder.builder()
                 .httpVersion(HttpVersion.HTTP_1_1)
                 .httpStatus(HttpStatus.FOUND)

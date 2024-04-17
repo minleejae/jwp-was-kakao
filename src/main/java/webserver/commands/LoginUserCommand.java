@@ -8,6 +8,7 @@ import http.QueryParams;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
+import http.response.HttpResponseHeaderBuilder;
 import http.session.Session;
 import http.session.SessionManager;
 import model.User;
@@ -45,8 +46,10 @@ public class LoginUserCommand implements HttpRequestCommand {
     }
 
     private HttpResponse createRedirectResponse(String location) {
-        Header header = new Header();
-        header.put("location", location);
+        Header header = new HttpResponseHeaderBuilder.Builder()
+                .location(location)
+                .build();
+
         return HttpResponseBuilder.builder()
                 .httpVersion(HttpVersion.HTTP_1_1)
                 .httpStatus(HttpStatus.FOUND)
@@ -55,14 +58,15 @@ public class LoginUserCommand implements HttpRequestCommand {
     }
 
     private HttpResponse createRedirectResponseWithCookie(User user, String location, String sessionId) {
-        Header header = new Header();
-        header.put("location", location);
-
         Session newSession = new Session(sessionId);
         newSession.setAttribute("userId", user.getUserId());
         SessionManager.getInstance().add(newSession);
 
-        header.put("Set-Cookie", "JSESSIONID=" + sessionId + "; Path=/");
+        Header header = new HttpResponseHeaderBuilder.Builder()
+                .location(location)
+                .cookie("JSESSIONID=" + sessionId + "; Path=/")
+                .build();
+
         return HttpResponseBuilder.builder()
                 .httpVersion(HttpVersion.HTTP_1_1)
                 .httpStatus(HttpStatus.FOUND)

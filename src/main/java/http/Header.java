@@ -1,28 +1,24 @@
 package http;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class Header {
-    private final Map<String, String> map = new HashMap<>();
+    private final Map<String, String> headers;
 
-    public Header() {
+    public Header(Map<String, String> headers) {
+        this.headers = headers;
     }
-
-    public void put(String key, String value) {
-        map.put(key, value);
-    }
-
+    
     public String get(String key) {
-        return map.get(key);
+        return headers.get(key);
     }
 
     public int getContentLength() {
-        return Integer.parseInt(map.get("Content-Length"));
+        return Integer.parseInt(headers.get("Content-Length"));
     }
 
     public Set<String> getKeys() {
-        return map.keySet();
+        return headers.keySet();
     }
 }

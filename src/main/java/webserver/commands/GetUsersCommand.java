@@ -12,6 +12,7 @@ import http.HttpVersion;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
+import http.response.HttpResponseHeaderBuilder;
 import http.session.Session;
 import http.session.SessionManager;
 import model.User;
@@ -50,9 +51,10 @@ public class GetUsersCommand implements HttpRequestCommand {
             Template template = handlebars.compile("user/list");
             byte[] body = template.apply(Map.of("users", indexedUsers)).getBytes();
 
-            Header header = new Header();
-            header.put("Content-Length", String.valueOf(body.length));
-            header.put("Content-Type", ContentType.TEXT_HTML + ";charset=utf-8");
+            Header header = new HttpResponseHeaderBuilder.Builder()
+                    .contentLength(body.length)
+                    .contentType(ContentType.TEXT_HTML)
+                    .build();
 
             return HttpResponseBuilder.builder()
                     .httpVersion(HttpVersion.HTTP_1_1)
@@ -96,8 +98,10 @@ public class GetUsersCommand implements HttpRequestCommand {
     }
 
     private HttpResponse createRedirectResponse(String location) {
-        Header header = new Header();
-        header.put("Location", location);
+        Header header = new HttpResponseHeaderBuilder.Builder()
+                .location(location)
+                .build();
+
         return HttpResponseBuilder.builder()
                 .httpVersion(HttpVersion.HTTP_1_1)
                 .httpStatus(HttpStatus.FOUND)
