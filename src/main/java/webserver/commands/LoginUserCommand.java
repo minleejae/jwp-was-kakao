@@ -15,6 +15,8 @@ import model.User;
 
 import java.util.UUID;
 
+import static http.response.HttpResponseBuilder.createRedirectResponse;
+
 public class LoginUserCommand implements HttpRequestCommand {
 
     public LoginUserCommand() {
@@ -30,10 +32,10 @@ public class LoginUserCommand implements HttpRequestCommand {
         User user = DataBase.findUserById(userId);
 
         if (!isValidUser(user, password)) {
-            return createRedirectResponse("http://localhost:8080/user/login_failed.html");
+            return createRedirectResponse("/user/login_failed.html");
         }
 
-        return createRedirectResponseWithCookie(user, "http://localhost:8080/index.html", generateSessionId());
+        return createRedirectResponseWithCookie(user, "/index.html", generateSessionId());
     }
 
     private QueryParams extractQueryParams(HttpRequest httpRequest) {
@@ -43,18 +45,6 @@ public class LoginUserCommand implements HttpRequestCommand {
 
     private boolean isValidUser(User user, String password) {
         return user != null && password.equals(user.getPassword());
-    }
-
-    private HttpResponse createRedirectResponse(String location) {
-        Header header = new HttpResponseHeaderBuilder.Builder()
-                .location(location)
-                .build();
-
-        return HttpResponseBuilder.builder()
-                .httpVersion(HttpVersion.HTTP_1_1)
-                .httpStatus(HttpStatus.FOUND)
-                .header(header)
-                .build();
     }
 
     private HttpResponse createRedirectResponseWithCookie(User user, String location, String sessionId) {

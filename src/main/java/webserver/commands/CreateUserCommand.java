@@ -1,15 +1,12 @@
 package webserver.commands;
 
 import db.DataBase;
-import http.Header;
-import http.HttpStatus;
-import http.HttpVersion;
 import http.QueryParams;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
-import http.response.HttpResponseBuilder;
-import http.response.HttpResponseHeaderBuilder;
 import model.User;
+
+import static http.response.HttpResponseBuilder.createRedirectResponse;
 
 public class CreateUserCommand implements HttpRequestCommand {
 
@@ -30,14 +27,6 @@ public class CreateUserCommand implements HttpRequestCommand {
 
         DataBase.addUser(user);
 
-        Header header = new HttpResponseHeaderBuilder.Builder()
-                .location("http://localhost:8080/index.html")
-                .build();
-
-        return HttpResponseBuilder.builder()
-                .httpVersion(HttpVersion.HTTP_1_1)
-                .httpStatus(HttpStatus.FOUND)
-                .header(header)
-                .build();
+        return createRedirectResponse("/index.html");
     }
 }

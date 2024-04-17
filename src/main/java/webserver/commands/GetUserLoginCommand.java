@@ -17,12 +17,14 @@ import utils.TemplateUrlBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import static http.response.HttpResponseBuilder.createRedirectResponse;
+
 public class GetUserLoginCommand implements HttpRequestCommand {
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) throws IOException, URISyntaxException {
         if (isUserLoggedIn(httpRequest)) {
-            return createRedirectResponse("http://localhost:8080/index.html");
+            return createRedirectResponse("/index.html");
         }
 
         String templateUrl = TemplateUrlBuilder.build(httpRequest.getUrl().getPath());
@@ -64,17 +66,5 @@ public class GetUserLoginCommand implements HttpRequestCommand {
 
         Session session = SessionManager.getInstance().findSession(sessionId);
         return session != null && session.getAttribute("userId") != null;
-    }
-
-    private HttpResponse createRedirectResponse(String location) {
-        Header header = new HttpResponseHeaderBuilder.Builder()
-                .location(location)
-                .build();
-
-        return HttpResponseBuilder.builder()
-                .httpVersion(HttpVersion.HTTP_1_1)
-                .httpStatus(HttpStatus.FOUND)
-                .header(header)
-                .build();
     }
 }

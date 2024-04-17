@@ -25,6 +25,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static http.response.HttpResponseBuilder.createNotFoundResponse;
+import static http.response.HttpResponseBuilder.createRedirectResponse;
+
 public class GetUsersCommand implements HttpRequestCommand {
 
     private static final Logger log = LoggerFactory.getLogger(GetUsersCommand.class);
@@ -33,7 +36,7 @@ public class GetUsersCommand implements HttpRequestCommand {
     public HttpResponse handle(HttpRequest httpRequest) {
         // 사용자가 로그인한 상태인지 확인
         if (!isUserLoggedIn(httpRequest)) {
-            return createRedirectResponse("login.html");
+            return createRedirectResponse("/login.html");
         }
 
         try {
@@ -65,11 +68,7 @@ public class GetUsersCommand implements HttpRequestCommand {
 
         } catch (Exception e) {
             log.error("Error rendering user list", e);
-            return HttpResponseBuilder.builder()
-                    .httpVersion(HttpVersion.HTTP_1_1)
-                    .httpStatus(HttpStatus.NOT_FOUND)
-                    .body("Internal Server Error".getBytes())
-                    .build();
+            return createNotFoundResponse();
         }
     }
 
@@ -95,17 +94,5 @@ public class GetUsersCommand implements HttpRequestCommand {
 
         Session session = SessionManager.getInstance().findSession(sessionId);
         return session != null && session.getAttribute("userId") != null;
-    }
-
-    private HttpResponse createRedirectResponse(String location) {
-        Header header = new HttpResponseHeaderBuilder.Builder()
-                .location(location)
-                .build();
-
-        return HttpResponseBuilder.builder()
-                .httpVersion(HttpVersion.HTTP_1_1)
-                .httpStatus(HttpStatus.FOUND)
-                .header(header)
-                .build();
     }
 }

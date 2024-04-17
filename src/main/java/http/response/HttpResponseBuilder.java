@@ -44,4 +44,24 @@ public class HttpResponseBuilder {
             return new HttpResponse(startLine, header, body);
         }
     }
+
+    public static HttpResponse createRedirectResponse(String locationUrl) {
+        Header header = new HttpResponseHeaderBuilder.Builder()
+                .location(locationUrl)
+                .build();
+
+        return HttpResponseBuilder.builder()
+                .httpVersion(HttpVersion.HTTP_1_1)
+                .httpStatus(HttpStatus.FOUND)
+                .header(header)
+                .build();
+    }
+
+    public static HttpResponse createNotFoundResponse(){
+        return HttpResponseBuilder.builder()
+                .httpVersion(HttpVersion.HTTP_1_1)
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .body("Internal Server Error".getBytes())
+                .build();
+    }
 }
