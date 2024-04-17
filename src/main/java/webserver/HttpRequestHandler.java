@@ -3,10 +3,12 @@ package webserver;
 import http.HttpMethod;
 import http.HttpStatus;
 import http.HttpVersion;
-import webserver.commands.*;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
+import webserver.commands.*;
+import webserver.route.RouteKey;
+import webserver.route.RouteKeyFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,15 +19,22 @@ public class HttpRequestHandler {
 
     private final HttpRequest httpRequest;
 
-    private static final Map<String, HttpRequestCommand> routeTable = new HashMap<>();
+    private static final Map<RouteKey, HttpRequestCommand> routeTable = new HashMap<>();
+
+    public static final String ROOT = "/";
+    public static final String USER_LIST = "/user/list.html";
+    public static final String USER_LOGIN = "/user/login.html";
+    public static final String USER_CREATE = "/user/create";
+    public static final String USER_LOGIN_POST = "/user/login";
+    public static final String WILDCARD = "/*";
 
     static {
-        routeTable.put("GET:/", new RedirectToIndexCommand());
-        routeTable.put("GET:/user/list.html", new GetUsersCommand());
-        routeTable.put("GET:/user/login.html", new GetUserLoginCommand());
-        routeTable.put("GET:/*", new GetRequestCommand());
-        routeTable.put("POST:/user/create", new CreateUserCommand());
-        routeTable.put("POST:/user/login", new LoginUserCommand());
+        routeTable.put(RouteKeyFactory.getRouteKey(HttpMethod.GET, ROOT), new RedirectToIndexCommand());
+        routeTable.put(RouteKeyFactory.getRouteKey(HttpMethod.GET, USER_LIST), new GetUsersCommand());
+        routeTable.put(RouteKeyFactory.getRouteKey(HttpMethod.GET, USER_LOGIN), new GetUserLoginCommand());
+        routeTable.put(RouteKeyFactory.getRouteKey(HttpMethod.GET, WILDCARD), new GetRequestCommand());
+        routeTable.put(RouteKeyFactory.getRouteKey(HttpMethod.POST, USER_CREATE), new CreateUserCommand());
+        routeTable.put(RouteKeyFactory.getRouteKey(HttpMethod.POST, USER_LOGIN_POST), new LoginUserCommand());
     }
 
     public HttpRequestHandler(HttpRequest httpRequest) {
@@ -35,11 +44,12 @@ public class HttpRequestHandler {
     public HttpResponse handle() throws IOException, URISyntaxException {
         HttpMethod method = httpRequest.getHttpMethod();
         String path = httpRequest.getUrl().getPath();
-        String key = method.toString() + ":/*";
+
+        RouteKey key = RouteKeyFactory.getRouteKey(method, WILDCARD);
 
         HttpRequestCommand command = routeTable.get(key);
 
-        String specificKey = method + ":" + path;
+        RouteKey specificKey = RouteKeyFactory.getRouteKey(method, path);
         if (routeTable.containsKey(specificKey)) {
             command = routeTable.get(specificKey);
         }
