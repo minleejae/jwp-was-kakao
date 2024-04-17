@@ -5,7 +5,6 @@ import http.Header;
 import http.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.HttpStartLineUtils;
 import utils.IOUtils;
 
 import java.io.BufferedReader;
@@ -32,9 +31,9 @@ public class HttpRequestBuilder {
     }
 
     private RequestStartLine buildStartLine() throws IOException {
-        String line = bufferedReader.readLine();
-        logger.debug(line);
-        return HttpStartLineUtils.parse(line);
+        String startLine = bufferedReader.readLine();
+        logger.debug(startLine);
+        return RequestStartLine.from(startLine);
     }
 
     private Header buildHeader() throws IOException {

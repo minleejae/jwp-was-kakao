@@ -23,10 +23,6 @@ public class HttpRequest {
         return requestStartLine.getUrl();
     }
 
-    public String getEndPoint() {
-        return requestStartLine.getEndPoint();
-    }
-
     public Header getHeader() {
         return this.header;
     }

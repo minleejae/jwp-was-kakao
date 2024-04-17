@@ -34,7 +34,7 @@ public class HttpRequestHandler {
 
     public HttpResponse handle() throws IOException, URISyntaxException {
         HttpMethod method = httpRequest.getHttpMethod();
-        String path = httpRequest.getEndPoint();
+        String path = httpRequest.getUrl().getPath();
         String key = method.toString() + ":/*";
 
         HttpRequestCommand command = routeTable.get(key);

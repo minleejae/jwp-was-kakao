@@ -8,7 +8,6 @@ import http.request.Url;
 import model.User;
 import org.junit.jupiter.api.Test;
 import utils.FileIoUtils;
-import utils.HttpStartLineUtils;
 import utils.QueryStringParser;
 
 import java.io.IOException;
@@ -25,16 +24,16 @@ class RequestHandlerTest {
 
     @Test
     void 헤더에서_타입_추출하기() {
-        RequestStartLine requestStartLine = HttpStartLineUtils.parse(REQUEST_START_LINE);
+        RequestStartLine requestStartLine = RequestStartLine.from(REQUEST_START_LINE);
 
         assertThat(requestStartLine.getHttpMethod()).isEqualTo(HttpMethod.GET);
         assertThat(requestStartLine.getUrl().getPath()).isEqualTo("/index.html");
-        assertThat(requestStartLine.getProtocol()).isEqualTo(Protocol.HTTP_1_1.getVersion());
+        assertThat(requestStartLine.getProtocol()).isEqualTo(Protocol.HTTP_1_1);
     }
 
     @Test
     void 헤더에서_URL_추출해서_해당하는_파일_읽기() throws IOException, URISyntaxException {
-        RequestStartLine requestStartLine = HttpStartLineUtils.parse(REQUEST_START_LINE);
+        RequestStartLine requestStartLine = RequestStartLine.from(REQUEST_START_LINE);
         String path = requestStartLine.getUrl().getPath();
 
         String filePath = TEMPLATE_PATH + path;
@@ -47,9 +46,9 @@ class RequestHandlerTest {
 
     @Test
     void QUERY_STRING_파싱() {
-        String header = "GET /user/create?userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com HTTP/1.1";
+        String startLine = "GET /user/create?userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com HTTP/1.1";
 
-        RequestStartLine requestStartLine = HttpStartLineUtils.parse(header);
+        RequestStartLine requestStartLine = RequestStartLine.from(startLine);
 
         Url url = requestStartLine.getUrl();
         String queryString = url.getQueryString();
@@ -67,9 +66,9 @@ class RequestHandlerTest {
 
     @Test
     void QUERY_PARAM_MAPPER_테스트() {
-        String header = "GET /user/create?userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com HTTP/1.1";
+        String startLine = "GET /user/create?userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com HTTP/1.1";
 
-        RequestStartLine requestStartLine = HttpStartLineUtils.parse(header);
+        RequestStartLine requestStartLine = RequestStartLine.from(startLine);
 
         Url url = requestStartLine.getUrl();
         String queryString = url.getQueryString();
