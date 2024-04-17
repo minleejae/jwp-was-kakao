@@ -8,8 +8,6 @@ import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
 import http.response.HttpResponseHeaderBuilder;
-import http.session.Session;
-import http.session.SessionManager;
 import utils.ContentTypeParser;
 import utils.FileIoUtils;
 import utils.TemplateUrlBuilder;
@@ -18,6 +16,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static http.response.HttpResponseBuilder.createRedirectResponse;
+import static service.UserService.isUserLoggedIn;
 
 public class GetUserLoginCommand implements HttpRequestCommand {
 
@@ -42,29 +41,5 @@ public class GetUserLoginCommand implements HttpRequestCommand {
                 .body(body)
                 .header(header)
                 .build();
-    }
-
-    private boolean isUserLoggedIn(HttpRequest httpRequest) {
-        String cookies = httpRequest.getHeader().get("Cookie");
-
-        if (cookies == null || !cookies.contains("JSESSIONID")) {
-            return false;
-        }
-
-        String[] cookiesArray = cookies.split(";\\s*");
-        String sessionId = null;
-        for (String cookie : cookiesArray) {
-            if (cookie.startsWith("JSESSIONID=")) {
-                sessionId = cookie.substring("JSESSIONID=".length());
-                break;
-            }
-        }
-
-        if (sessionId == null) {
-            return false;
-        }
-
-        Session session = SessionManager.getInstance().findSession(sessionId);
-        return session != null && session.getAttribute("userId") != null;
     }
 }

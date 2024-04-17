@@ -9,7 +9,7 @@ public class Header {
     public Header(Map<String, String> headers) {
         this.headers = headers;
     }
-    
+
     public String get(String key) {
         return headers.get(key);
     }
@@ -20,5 +20,9 @@ public class Header {
 
     public Set<String> getKeys() {
         return headers.keySet();
+    }
+
+    public String getCookie() {
+        return headers.get("Cookie");
     }
 }

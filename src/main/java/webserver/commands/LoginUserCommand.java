@@ -1,10 +1,7 @@
 package webserver.commands;
 
 import db.DataBase;
-import http.Header;
-import http.HttpStatus;
-import http.HttpVersion;
-import http.QueryParams;
+import http.*;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
@@ -16,6 +13,7 @@ import model.User;
 import java.util.UUID;
 
 import static http.response.HttpResponseBuilder.createRedirectResponse;
+import static service.UserService.isValidUser;
 
 public class LoginUserCommand implements HttpRequestCommand {
 
@@ -43,18 +41,16 @@ public class LoginUserCommand implements HttpRequestCommand {
         return QueryParams.of(requestBody);
     }
 
-    private boolean isValidUser(User user, String password) {
-        return user != null && password.equals(user.getPassword());
-    }
-
     private HttpResponse createRedirectResponseWithCookie(User user, String location, String sessionId) {
         Session newSession = new Session(sessionId);
         newSession.setAttribute("userId", user.getUserId());
         SessionManager.getInstance().add(newSession);
 
+        HttpCookie httpCookie = HttpCookie.createBySessionId(sessionId, "/");
+
         Header header = new HttpResponseHeaderBuilder.Builder()
                 .location(location)
-                .cookie("JSESSIONID=" + sessionId + "; Path=/")
+                .cookie(httpCookie)
                 .build();
 
         return HttpResponseBuilder.builder()

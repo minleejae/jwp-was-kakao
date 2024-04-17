@@ -13,11 +13,10 @@ import http.request.HttpRequest;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
 import http.response.HttpResponseHeaderBuilder;
-import http.session.Session;
-import http.session.SessionManager;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +33,8 @@ public class GetUsersCommand implements HttpRequestCommand {
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) {
-        // 사용자가 로그인한 상태인지 확인
-        if (!isUserLoggedIn(httpRequest)) {
-            return createRedirectResponse("/login.html");
+        if (!UserService.isUserLoggedIn(httpRequest)) {
+            return createRedirectResponse("/user/login.html");
         }
 
         try {
@@ -70,29 +68,5 @@ public class GetUsersCommand implements HttpRequestCommand {
             log.error("Error rendering user list", e);
             return createNotFoundResponse();
         }
-    }
-
-    private boolean isUserLoggedIn(HttpRequest httpRequest) {
-        String cookies = httpRequest.getHeader().get("Cookie");
-
-        if (cookies == null || !cookies.contains("JSESSIONID")) {
-            return false;
-        }
-
-        String[] cookiesArray = cookies.split(";\\s*");
-        String sessionId = null;
-        for (String cookie : cookiesArray) {
-            if (cookie.startsWith("JSESSIONID=")) {
-                sessionId = cookie.substring("JSESSIONID=".length());
-                break;
-            }
-        }
-
-        if (sessionId == null) {
-            return false;
-        }
-
-        Session session = SessionManager.getInstance().findSession(sessionId);
-        return session != null && session.getAttribute("userId") != null;
     }
 }
