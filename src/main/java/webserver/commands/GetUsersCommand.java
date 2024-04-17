@@ -5,6 +5,7 @@ import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import db.DataBase;
+import dto.IndexedUserDTO;
 import http.ContentType;
 import http.Header;
 import http.HttpStatus;
@@ -17,12 +18,11 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserService;
+import utils.UserIndexer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static http.response.HttpResponseBuilder.createNotFoundResponse;
 import static http.response.HttpResponseBuilder.createRedirectResponse;
@@ -30,7 +30,15 @@ import static http.response.HttpResponseBuilder.createRedirectResponse;
 public class GetUsersCommand implements HttpRequestCommand {
 
     private static final Logger log = LoggerFactory.getLogger(GetUsersCommand.class);
+    private static final Handlebars handlebars = initializeHandlebars();
 
+    private static Handlebars initializeHandlebars() {
+        TemplateLoader loader = new ClassPathTemplateLoader();
+        loader.setPrefix("/templates");
+        loader.setSuffix(".html");
+        return new Handlebars(loader);
+    }
+    
     @Override
     public HttpResponse handle(HttpRequest httpRequest) {
         if (!UserService.isUserLoggedIn(httpRequest)) {
@@ -39,15 +47,7 @@ public class GetUsersCommand implements HttpRequestCommand {
 
         try {
             List<User> users = new ArrayList<>(DataBase.findAll());
-
-            List<Map<String, Object>> indexedUsers = IntStream.range(0, users.size())
-                    .mapToObj(index -> Map.of("index", index + 1, "user", users.get(index)))
-                    .collect(Collectors.toList());
-
-            TemplateLoader loader = new ClassPathTemplateLoader();
-            loader.setPrefix("/templates");
-            loader.setSuffix(".html");
-            Handlebars handlebars = new Handlebars(loader);
+            List<IndexedUserDTO> indexedUsers = UserIndexer.indexUsers(users);
 
             Template template = handlebars.compile("user/list");
             byte[] body = template.apply(Map.of("users", indexedUsers)).getBytes();
