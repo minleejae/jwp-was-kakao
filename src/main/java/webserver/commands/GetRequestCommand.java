@@ -5,6 +5,7 @@ import http.Header;
 import http.HttpStatus;
 import http.HttpVersion;
 import http.request.HttpRequest;
+import http.request.Url;
 import http.response.HttpResponse;
 import http.response.HttpResponseBuilder;
 import utils.ContentTypeParser;
@@ -21,7 +22,8 @@ public class GetRequestCommand implements HttpRequestCommand {
 
     @Override
     public HttpResponse handle(HttpRequest httpRequest) throws IOException, URISyntaxException {
-        String templateUrl = TemplateUrlBuilder.build(httpRequest.getUrl());
+        Url url = httpRequest.getUrl();
+        String templateUrl = TemplateUrlBuilder.build(url.getPath());
         ContentType contentType = ContentTypeParser.parse(templateUrl);
         byte[] body = FileIoUtils.loadFileFromClasspath(templateUrl);
 

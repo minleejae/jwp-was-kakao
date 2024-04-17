@@ -4,22 +4,28 @@ import http.HttpMethod;
 
 public class RequestStartLine {
     private final HttpMethod httpMethod;
-    private final String url;
+    private final Url url;
+    private final Protocol protocol;
 
-    public RequestStartLine(HttpMethod httpMethod, String url) {
+    public RequestStartLine(HttpMethod httpMethod, Url url, Protocol protocol) {
         this.httpMethod = httpMethod;
         this.url = url;
+        this.protocol = protocol;
     }
 
     public HttpMethod getHttpMethod() {
         return httpMethod;
     }
 
-    public String getUrl() {
+    public Url getUrl() {
         return url;
     }
 
     public String getEndPoint() {
-        return url.split("\\?")[0];
+        return url.getEndPoint();
+    }
+
+    public String getProtocol() {
+        return protocol.getVersion();
     }
 }

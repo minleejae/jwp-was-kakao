@@ -5,9 +5,8 @@ import http.Header;
 import http.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.HttpHeaderUtils;
+import utils.HttpStartLineUtils;
 import utils.IOUtils;
-import utils.ResponseWriter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +34,7 @@ public class HttpRequestBuilder {
     private RequestStartLine buildStartLine() throws IOException {
         String line = bufferedReader.readLine();
         logger.debug(line);
-        return HttpHeaderUtils.parse(line);
+        return HttpStartLineUtils.parse(line);
     }
 
     private Header buildHeader() throws IOException {

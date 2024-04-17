@@ -2,12 +2,14 @@ package webserver;
 
 import http.HttpMethod;
 import http.QueryParams;
+import http.request.Protocol;
+import http.request.RequestStartLine;
+import http.request.Url;
 import model.User;
 import org.junit.jupiter.api.Test;
 import utils.FileIoUtils;
-import utils.HttpHeaderUtils;
+import utils.HttpStartLineUtils;
 import utils.QueryStringParser;
-import utils.UrlParser;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,27 +21,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RequestHandlerTest {
 
     private static final String TEMPLATE_PATH = "./templates";
-    private static final String HEADER = "GET /index.html HTTP/1.1";
+    private static final String REQUEST_START_LINE = "GET /index.html HTTP/1.1";
 
     @Test
     void 헤더에서_타입_추출하기() {
-        HttpMethod httpMethod = HttpHeaderUtils.parseHttpMethod(HEADER);
+        RequestStartLine requestStartLine = HttpStartLineUtils.parse(REQUEST_START_LINE);
 
-        assertThat(httpMethod).isEqualTo(HttpMethod.GET);
-    }
-
-    @Test
-    void 헤더에서_URL_추출하기() {
-        String url = HttpHeaderUtils.parseUrl(HEADER);
-
-        assertThat(url).isEqualTo("/index.html");
+        assertThat(requestStartLine.getHttpMethod()).isEqualTo(HttpMethod.GET);
+        assertThat(requestStartLine.getUrl().getPath()).isEqualTo("/index.html");
+        assertThat(requestStartLine.getProtocol()).isEqualTo(Protocol.HTTP_1_1.getVersion());
     }
 
     @Test
     void 헤더에서_URL_추출해서_해당하는_파일_읽기() throws IOException, URISyntaxException {
-        String url = HttpHeaderUtils.parseUrl(HEADER);
+        RequestStartLine requestStartLine = HttpStartLineUtils.parse(REQUEST_START_LINE);
+        String path = requestStartLine.getUrl().getPath();
 
-        String filePath = TEMPLATE_PATH + url;
+        String filePath = TEMPLATE_PATH + path;
 
         byte[] bytes = FileIoUtils.loadFileFromClasspath(filePath);
 
@@ -49,10 +47,13 @@ class RequestHandlerTest {
 
     @Test
     void QUERY_STRING_파싱() {
-        String header = "GET /user/create?userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com HTTP/1.1\n";
+        String header = "GET /user/create?userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com HTTP/1.1";
 
-        String url = HttpHeaderUtils.parseUrl(header);
-        String queryString = UrlParser.parseToQueryString(url);
+        RequestStartLine requestStartLine = HttpStartLineUtils.parse(header);
+
+        Url url = requestStartLine.getUrl();
+        String queryString = url.getQueryString();
+
         Map<String, String> data = QueryStringParser.parseToMap(queryString);
 
         QueryParams queryParams = new QueryParams(data);
@@ -66,10 +67,13 @@ class RequestHandlerTest {
 
     @Test
     void QUERY_PARAM_MAPPER_테스트() {
-        String header = "GET /user/create?userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com HTTP/1.1\n";
+        String header = "GET /user/create?userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com HTTP/1.1";
 
-        String url = HttpHeaderUtils.parseUrl(header);
-        String queryString = UrlParser.parseToQueryString(url);
+        RequestStartLine requestStartLine = HttpStartLineUtils.parse(header);
+
+        Url url = requestStartLine.getUrl();
+        String queryString = url.getQueryString();
+
         Map<String, String> data = QueryStringParser.parseToMap(queryString);
 
         QueryParams queryParams = new QueryParams(data);

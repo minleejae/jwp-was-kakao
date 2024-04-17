@@ -19,7 +19,7 @@ public class HttpRequest {
         return requestStartLine.getHttpMethod();
     }
 
-    public String getUrl() {
+    public Url getUrl() {
         return requestStartLine.getUrl();
     }
 

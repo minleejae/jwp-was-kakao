@@ -24,7 +24,7 @@ public class GetUserLoginCommand implements HttpRequestCommand {
             return createRedirectResponse("http://localhost:8080/index.html");
         }
 
-        String templateUrl = TemplateUrlBuilder.build(httpRequest.getUrl());
+        String templateUrl = TemplateUrlBuilder.build(httpRequest.getUrl().getPath());
         ContentType contentType = ContentTypeParser.parse(templateUrl);
         byte[] body = FileIoUtils.loadFileFromClasspath(templateUrl);
 
